@@ -1,12 +1,9 @@
 .container {
-	width: 200px;
-	height: 100px;
-	background-color: #fff;
-	.info {
-		background: #fff;
-	}
-	.send {
-		width: 15px;
-		height: 15px;
-	}
+	position: fixed;
+	z-index: 1000;
+	background-color: #3337;
+	left: 0;
+	top: 0;
+	width: 400px;
+	height: 200px;
 }
