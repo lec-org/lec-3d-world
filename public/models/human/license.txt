@@ -1,0 +1,11 @@
+Model Information:
+* title:	Rudy Fanart
+* source:	https://sketchfab.com/3d-models/rudy-fanart-048058a3875849faba07e311a024ed4d
+* author:	Duong Bui Duc (https://sketchfab.com/duongbui04)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Rudy Fanart" (https://sketchfab.com/3d-models/rudy-fanart-048058a3875849faba07e311a024ed4d) by Duong Bui Duc (https://sketchfab.com/duongbui04) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
