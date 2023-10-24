@@ -36,7 +36,11 @@ const Canvas3d = () => {
     mountTo(elementRef.current);
   }, []);
 
-  return <div className={style["canvas-3d"]} ref={elementRef}></div>;
+  return (
+    <>
+      <div className={style["canvas-3d"]} ref={elementRef}></div>
+    </>
+  );
 };
 
 export default Canvas3d;
