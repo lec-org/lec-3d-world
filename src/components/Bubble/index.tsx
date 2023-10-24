@@ -5,15 +5,21 @@ const Bubble = () => {
   // const sendmsg = useRef(() => {})
   const [socket, setSocket] = useState<WebSocket>();
   useEffect(() => {
-    const s = initWebSocket(
-      "ws://localhost:2333",
-      (msg) => {
-        console.log(msg);
-      },
-      (err) => {
-        console.log(err);
-      }
-    );
+    const url = "ws://localhost:2333";
+    // const s = initWebSocket(
+    //   url,
+    //   (msg) => {
+    //     console.log("success", msg);
+    //   },
+    //   (err) => {
+    //     console.log("err", err);
+    //   }
+    // );
+    const s = new window.WebSocket(url);
+    s.onopen = () => {
+      console.log("连接建立成功", url);
+    };
+
     setSocket(s);
   }, []);
 
