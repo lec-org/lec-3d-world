@@ -1,0 +1,38 @@
+.wrapper {
+  pointer-events: none;
+}
+.right-side,
+.left-side {
+  overflow: hidden;
+  margin: 8px;
+}
+
+.right-side {
+  display: flex;
+  flex-direction: flex-end;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.right-side .info {
+  text-align: right;
+}
+
+.user {
+  font-weight: 800;
+}
+
+.msg {
+  margin-top: 4px;
+}
+
+.msg span {
+  display: inline-block;
+  background: #3337;
+  padding: 8px;
+  border-radius: 6px;
+}

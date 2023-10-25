@@ -8,17 +8,21 @@ export const startServer = async () => {
       console.log("success!");
     });
   });
-
   const wsServer = new WebSocketServer({ server: httpServer });
   const socketSet = new Set();
 
-  wsServer.on("connection", (ws) => {
-    socketSet.add(ws);
+  wsServer.on("connection", (ws, req) => {
+    const url = req.url;
+    const id = url?.split("=")?.[1] ?? "";
+    console.log("id", id);
+
+    socketSet.add({ id, ws });
+
     ws.on("message", (msg) => {
-      socketSet.forEach((ws) => {
-        console.log(ws);
-        // if (ws.connected) ws.send(msg);
-        // else socketSet.delete(Ws);
+      socketSet.forEach((info: any) => {
+        if (info?.id !== id) {
+          info?.ws.send(JSON.stringify({ id, msg: msg.toString() }));
+        }
       });
       if (msg) {
         ws.send(JSON.stringify("服务器收到了消息 "));
