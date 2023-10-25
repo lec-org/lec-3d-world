@@ -9,9 +9,10 @@ export interface MsgData {
 
 interface BubbleProps {
   isShow: boolean;
+  id: string | number;
 }
 
-const Chat = ({ isShow }: BubbleProps) => {
+const Chat = ({ isShow, id }: BubbleProps) => {
   // const sendmsg = useRef(() => {})
   const idRef = useRef<string | number>();
   const [socket, setSocket] = useState<WebSocket>();
@@ -20,31 +21,30 @@ const Chat = ({ isShow }: BubbleProps) => {
   const inputRef = useRef<HTMLInputElement>();
 
   useEffect(() => {
-    const id = sessionStorage.getItem("uuid");
-    idRef.current = id;
-    const url = `ws://192.168.124.44:2333?id=${id}`;
-    const s = new window.WebSocket(url);
+    if (id) {
+      const url = `ws://192.168.124.44:2333?id=${id}`;
+      const s = new window.WebSocket(url);
 
-    s.onopen = () => {
-      s.send(`${id}`);
-      console.log("连接建立成功", url);
-    };
+      s.onopen = () => {
+        s.send(`${id}`);
+        console.log("连接建立成功", url);
+      };
 
-    s.onmessage = (v) => {
-      // const msg = JSON.parse(json);
-      const data = JSON.parse(v.data);
-      console.log("data", data, data.msg, data.id);
-      if (data.msg && data.id) {
-        const newList = [
-          ...msgDataList,
-          { msg: `${data.msg}`, id: `${data.id}` },
-        ];
-        setMsgDataList(newList);
-      }
-    };
+      s.onmessage = (v) => {
+        // const msg = JSON.parse(json);
+        const data = JSON.parse(v.data);
+        if (data.msg && data.id) {
+          const newList = [
+            ...msgDataList,
+            { msg: `${data.msg}`, id: `${data.id}` },
+          ];
+          setMsgDataList(newList);
+        }
+      };
 
-    setSocket(s);
-  }, []);
+      setSocket(s);
+    }
+  }, [id, msgDataList]);
 
   useEffect(() => {
     if (isShow) {
@@ -79,7 +79,6 @@ const Chat = ({ isShow }: BubbleProps) => {
               ...msgDataList,
               { msg: msgRef.current, id: idRef.current },
             ];
-            console.log("new", newList);
             setMsgDataList(newList);
             socket.send(msgRef.current);
             // inputRef.current.value = "";

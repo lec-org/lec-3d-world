@@ -32,7 +32,6 @@ const Canvas3d = () => {
     });
 
     // 挂载到一个 DOM 元素上
-    console.log("????", elementRef);
     mountTo(elementRef.current);
   }, []);
 

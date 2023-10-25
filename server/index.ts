@@ -14,7 +14,6 @@ export const startServer = async () => {
   wsServer.on("connection", (ws, req) => {
     const url = req.url;
     const id = url?.split("=")?.[1] ?? "";
-    console.log("id", id);
 
     socketSet.add({ id, ws });
 

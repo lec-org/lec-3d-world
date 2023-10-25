@@ -5,17 +5,11 @@ import Canvas3d from "./components/Canvas3d";
 
 const App = () => {
   const [isShow, setIsShow] = useState(false);
+  const [id, setId] = useState<string | number>();
 
   useEffect(() => {
-    const uuid = sessionStorage.getItem("uuid");
-    console.log(uuid);
-    if (!uuid || uuid === "null") {
-      console.log(true);
-
-      // setToShow(true)
-      const id = window.prompt("请输入用户名");
-      sessionStorage.setItem("uuid", id);
-    }
+    const uid = window.prompt("请输入用户名");
+    setId(uid);
 
     document.onkeydown = (e) => {
       if (e.key == "i" && e.ctrlKey) {
@@ -25,7 +19,7 @@ const App = () => {
   }, [isShow]);
   return (
     <div>
-      {<Chat isShow={isShow}></Chat>}
+      {<Chat isShow={isShow} id={id}></Chat>}
       <Canvas3d></Canvas3d>
     </div>
   );
