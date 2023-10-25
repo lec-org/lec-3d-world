@@ -10,10 +10,11 @@ const HistoryList = ({ msgDataList, currentUserId }: HistoryListProps) => {
   return (
     <div className={style.wrapper}>
       {msgDataList.map((msgData, index) => {
-        const isCurrentUser = +msgData.id === +currentUserId;
+        const isCurrentUser = msgData.id === currentUserId;
+        console.log(isCurrentUser, msgData.id, msgDataList);
         return (
           <div
-            key={index + msgData.msg + msgData.id}
+            key={index}
             className={isCurrentUser ? style["right-side"] : style["left-side"]}
           >
             <div className={style.info}>

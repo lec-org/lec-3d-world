@@ -1,5 +1,5 @@
 import style from "./index.module.css";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import HistoryList from "./HistoryList";
 
 export interface MsgData {
@@ -14,14 +14,30 @@ interface BubbleProps {
 
 const Chat = ({ isShow, id }: BubbleProps) => {
   // const sendmsg = useRef(() => {})
-  const idRef = useRef<string | number>();
   const [socket, setSocket] = useState<WebSocket>();
   const [msgDataList, setMsgDataList] = useState<Array<MsgData>>([]);
+  const msgDataListRef = useRef(msgDataList);
   const msgRef = useRef("");
   const inputRef = useRef<HTMLInputElement>();
 
+  const handleMsg = useCallback(
+    (v) => {
+      const data = JSON.parse(v.data);
+      console.log(data);
+      if (data.msg && data.id) {
+        const newList = [
+          ...msgDataList,
+          { msg: `${data.msg}`, id: `${data.id}` },
+        ];
+        console.log("发生了什么", msgDataList, newList);
+        setMsgDataList(newList);
+      }
+    },
+    [msgDataList]
+  );
+
   useEffect(() => {
-    if (id) {
+    if (id && !socket) {
       const url = `ws://192.168.124.44:2333?id=${id}`;
       const s = new window.WebSocket(url);
 
@@ -30,19 +46,22 @@ const Chat = ({ isShow, id }: BubbleProps) => {
         console.log("连接建立成功", url);
       };
 
-      s.onmessage = (v) => {
-        // const msg = JSON.parse(json);
+      (s.onmessage = (v) => {
         const data = JSON.parse(v.data);
+        console.log(data);
         if (data.msg && data.id) {
-          const newList = [
-            ...msgDataList,
+          // const newList = [
+          //   ...msgDataList,
+          //   { msg: `${data.msg}`, id: `${data.id}` },
+          // ];
+          msgDataListRef.current = [
+            ...msgDataListRef.current,
             { msg: `${data.msg}`, id: `${data.id}` },
           ];
-          setMsgDataList(newList);
+          setMsgDataList(msgDataListRef.current);
         }
-      };
-
-      setSocket(s);
+      }),
+        setSocket(s);
     }
   }, [id, msgDataList]);
 
@@ -58,10 +77,7 @@ const Chat = ({ isShow, id }: BubbleProps) => {
   return (
     <div className={style.container} style={{ opacity: isShow ? "1" : "0" }}>
       <div className={style.info}>
-        <HistoryList
-          msgDataList={msgDataList}
-          currentUserId={idRef.current}
-        ></HistoryList>
+        <HistoryList msgDataList={msgDataList} currentUserId={id}></HistoryList>
       </div>
 
       <div className={style.operation}>
@@ -75,13 +91,10 @@ const Chat = ({ isShow, id }: BubbleProps) => {
         <button
           className="send"
           onClick={() => {
-            const newList = [
-              ...msgDataList,
-              { msg: msgRef.current, id: idRef.current },
-            ];
+            const newList = [...msgDataList, { msg: msgRef.current, id }];
             setMsgDataList(newList);
             socket.send(msgRef.current);
-            // inputRef.current.value = "";
+            inputRef.current.value = "";
           }}
         >
           发送

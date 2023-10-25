@@ -10,7 +10,9 @@ const App = () => {
   useEffect(() => {
     const uid = window.prompt("请输入用户名");
     setId(uid);
+  }, []);
 
+  useEffect(() => {
     document.onkeydown = (e) => {
       if (e.key == "i" && e.ctrlKey) {
         setIsShow(!isShow);
