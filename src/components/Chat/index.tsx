@@ -17,24 +17,9 @@ const Chat = ({ isShow, id }: BubbleProps) => {
   const [socket, setSocket] = useState<WebSocket>();
   const [msgDataList, setMsgDataList] = useState<Array<MsgData>>([]);
   const msgDataListRef = useRef(msgDataList);
-  const msgRef = useRef("");
   const inputRef = useRef<HTMLInputElement>();
-
-  const handleMsg = useCallback(
-    (v) => {
-      const data = JSON.parse(v.data);
-      console.log(data);
-      if (data.msg && data.id) {
-        const newList = [
-          ...msgDataList,
-          { msg: `${data.msg}`, id: `${data.id}` },
-        ];
-        console.log("发生了什么", msgDataList, newList);
-        setMsgDataList(newList);
-      }
-    },
-    [msgDataList]
-  );
+  const btnRef = useRef<HTMLButtonElement>();
+  const infoWrapperRef = useRef<HTMLDivElement>();
 
   useEffect(() => {
     if (id && !socket) {
@@ -48,12 +33,7 @@ const Chat = ({ isShow, id }: BubbleProps) => {
 
       (s.onmessage = (v) => {
         const data = JSON.parse(v.data);
-        console.log(data);
         if (data.msg && data.id) {
-          // const newList = [
-          //   ...msgDataList,
-          //   { msg: `${data.msg}`, id: `${data.id}` },
-          // ];
           msgDataListRef.current = [
             ...msgDataListRef.current,
             { msg: `${data.msg}`, id: `${data.id}` },
@@ -76,7 +56,7 @@ const Chat = ({ isShow, id }: BubbleProps) => {
 
   return (
     <div className={style.container} style={{ opacity: isShow ? "1" : "0" }}>
-      <div className={style.info}>
+      <div className={style.info} ref={infoWrapperRef}>
         <HistoryList msgDataList={msgDataList} currentUserId={id}></HistoryList>
       </div>
 
@@ -84,16 +64,27 @@ const Chat = ({ isShow, id }: BubbleProps) => {
         <input
           ref={inputRef}
           type="text"
+          onKeyDown={(e) => {
+            if (e.code === "Enter") {
+              btnRef.current.click();
+            }
+          }}
           onChange={(e) => {
-            msgRef.current = e.target.value;
+            inputRef.current.value = e.target.value;
           }}
         />
         <button
           className="send"
+          ref={btnRef}
           onClick={() => {
-            const newList = [...msgDataList, { msg: msgRef.current, id }];
+            const newList = [
+              ...msgDataList,
+              { msg: inputRef.current.value, id },
+            ];
             setMsgDataList(newList);
-            socket.send(msgRef.current);
+            socket.send(inputRef.current.value);
+            infoWrapperRef.current.scrollTop =
+              infoWrapperRef.current.scrollHeight * 2;
             inputRef.current.value = "";
           }}
         >
