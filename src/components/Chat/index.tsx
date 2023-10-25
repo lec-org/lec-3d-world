@@ -15,31 +15,32 @@ const Chat = ({ isShow }: BubbleProps) => {
   // const sendmsg = useRef(() => {})
   const idRef = useRef<string | number>();
   const [socket, setSocket] = useState<WebSocket>();
-  const [msgDataList, setMsgDataList] = useState<Array<MsgData>>([
-    { msg: "123", id: "1" },
-    { msg: "123", id: "1" },
-    { msg: "123", id: "1" },
-    { msg: "哈哈哈哈", id: "2" },
-    { msg: "123", id: "1" },
-    { msg: "123", id: "1" },
-    { msg: "123", id: "1" },
-  ]);
+  const [msgDataList, setMsgDataList] = useState<Array<MsgData>>([]);
   const msgRef = useRef("");
   const inputRef = useRef<HTMLInputElement>();
 
   useEffect(() => {
-    idRef.current = sessionStorage.getItem("uuid");
-
-    const url = `ws://192.168.124.44:2333?id=${idRef.current}`;
+    const id = sessionStorage.getItem("uuid");
+    idRef.current = id;
+    const url = `ws://192.168.124.44:2333?id=${id}`;
     const s = new window.WebSocket(url);
 
     s.onopen = () => {
-      s.send(`${idRef.current}`);
+      s.send(`${id}`);
       console.log("连接建立成功", url);
     };
 
-    s.onmessage = (msg) => {
-      console.log(msg.data);
+    s.onmessage = (v) => {
+      // const msg = JSON.parse(json);
+      const data = JSON.parse(v.data);
+      console.log("data", data, data.msg, data.id);
+      if (data.msg && data.id) {
+        const newList = [
+          ...msgDataList,
+          { msg: `${data.msg}`, id: `${data.id}` },
+        ];
+        setMsgDataList(newList);
+      }
     };
 
     setSocket(s);
@@ -74,8 +75,14 @@ const Chat = ({ isShow }: BubbleProps) => {
         <button
           className="send"
           onClick={() => {
-            console.log(msgRef.current);
+            const newList = [
+              ...msgDataList,
+              { msg: msgRef.current, id: idRef.current },
+            ];
+            console.log("new", newList);
+            setMsgDataList(newList);
             socket.send(msgRef.current);
+            // inputRef.current.value = "";
           }}
         >
           发送

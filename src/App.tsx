@@ -16,8 +16,7 @@ const App = () => {
       const id = window.prompt("请输入用户名");
       sessionStorage.setItem("uuid", id);
     }
-  }, []);
-  useEffect(() => {
+
     document.onkeydown = (e) => {
       if (e.key == "i" && e.ctrlKey) {
         setIsShow(!isShow);

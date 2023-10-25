@@ -9,10 +9,11 @@ interface HistoryListProps {
 const HistoryList = ({ msgDataList, currentUserId }: HistoryListProps) => {
   return (
     <div className={style.wrapper}>
-      {msgDataList.map((msgData) => {
+      {msgDataList.map((msgData, index) => {
         const isCurrentUser = +msgData.id === +currentUserId;
         return (
           <div
+            key={index + msgData.msg + msgData.id}
             className={isCurrentUser ? style["right-side"] : style["left-side"]}
           >
             <div className={style.info}>
