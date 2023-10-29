@@ -1,27 +1,34 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import lec3d from '@trickle/lec3d'
 import style from './index.module.css'
 
 const Canvas3d = () => {
-	const [position, setposition] = useState({ x: 0, y: 0, z: 0 })
 	const elementRef = useRef(null)
-	const handleMove = (e) => {
+	const handleMove = (e, model, speed) => {
+		console.log(e)
+
+		console.log(model.position)
+
 		switch (e.key) {
 			case 'w':
 			case 'W':
-				setposition({ x: position.x++, y: position.y, z: position.z })
+				model.position.z += speed * 2
 				break
 			case 's':
 			case 'S':
-				setposition({ x: position.x--, y: position.y, z: position.z })
+				model.position.z -= speed * 2
 				break
 			case 'a':
 			case 'A':
-				setposition({ x: position.x, y: position.y++, z: position.z })
+				model.position.x += speed * 2
 				break
 			case 'd':
 			case 'D':
-				setposition({ x: position.x, y: position.y--, z: position.z })
+				model.position.x -= speed * 2
+				break
+			case ' ':
+				model.position.y += speed * 2
+				setTimeout(() => (model.position.y = 0), 1000)
 				break
 		}
 	}
@@ -40,24 +47,22 @@ const Canvas3d = () => {
 		lec3d.loadGLTF({
 			modelPath: 'models/human/scene.gltf',
 			options: {
-				position: {
-					x: position.x,
-					y: position.y,
-					z: position.z,
-				},
+				position: {},
 				rotation: {},
 			},
 			callback: (gltf, model) => {
 				// 添加到场景中
 				scene.add(model)
+				document.addEventListener('keydown', (e: KeyboardEvent) => {
+					handleMove(e, model, 10)
+				})
 			},
 		})
 
 		// 挂载到一个 DOM 元素上
 		mountTo(elementRef.current)
 		// 添加键盘事件监听器
-	}, [position])
-	document.addEventListener('keydown', handleMove)
+	}, [])
 	return (
 		<>
 			<div
