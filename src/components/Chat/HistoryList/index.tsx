@@ -11,7 +11,8 @@ const HistoryList = ({ msgDataList, currentUserId }: HistoryListProps) => {
   return (
     <div className={style.wrapper}>
       {msgDataList.map((msgData, index) => {
-        const isCurrentUser = msgData.id === currentUserId;
+        const isCurrentUser =
+          decodeURI(msgData.id.toString()) === currentUserId.toString();
         const isLastItem = index === msgDataList.length - 1;
 
         return (
@@ -19,6 +20,7 @@ const HistoryList = ({ msgDataList, currentUserId }: HistoryListProps) => {
             isCurrentUser={isCurrentUser}
             isLastItem={isLastItem}
             msgData={msgData}
+            key={msgData.id.toString() + msgData.msg + index}
           ></HistoryItem>
         );
       })}
